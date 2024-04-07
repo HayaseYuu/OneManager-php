@@ -1003,6 +1003,17 @@ class Onedrive {
         if (!$_SERVER['admin']) if (!isset($_POST['filemd5'])) return output('error: no file md5', 400);
 
         $tmp = splitlast($_POST['upbigfilename'], '/');
+        if ($tmp[1]!='') {
+            $fileinfo['name'] = $tmp[1];
+            $fileinfo['path'] = $tmp[0];
+        } else {
+            $fileinfo['name'] = $_POST['upbigfilename'];
+        }
+        $fileinfo['size'] = $_POST['filesize'];
+        $fileinfo['filelastModified'] = $_POST['filelastModified'];
+        $filename = spurlencode($_POST['upbigfilename'], '/');
+/*
+        $tmp = splitlast($_POST['upbigfilename'], '/');
         if ($tmp[1] != '') {
             $fileinfo['name'] = $tmp[1];
             if ($_SERVER['admin']) $fileinfo['path'] = $tmp[0];
@@ -1017,7 +1028,8 @@ class Onedrive {
             $tmp1 = splitlast($fileinfo['name'], '.');
             if ($tmp1[0] == '' || $tmp1[1] == '') $filename = $_POST['filemd5'];
             else $filename = $_POST['filemd5'] . '.' . $tmp1[1];
-        }
+        }*/
+        
         if ($fileinfo['size'] > 10 * 1024 * 1024) {
             $cachefilename = spurlencode($fileinfo['path'] . '/.' . $fileinfo['filelastModified'] . '_' . $fileinfo['size'] . '_' . $fileinfo['name'] . '.tmp', '/');
             $getoldupinfo = $this->list_files(path_format($path . '/' . $cachefilename));
